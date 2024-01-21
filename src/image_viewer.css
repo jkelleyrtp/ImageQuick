@@ -1,0 +1,12 @@
+/* make the body and html element sized to the window its in */
+html,
+body {
+    margin: 0px;
+    padding: 5px;
+}
+
+/* make the image fit height or width, whichever is the biggest */
+.viewer-image {
+    max-width: 100%;
+    max-height: 100%;
+}

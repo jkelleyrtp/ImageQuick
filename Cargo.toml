@@ -1,0 +1,17 @@
+[package]
+name = "dioxus-images"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+dioxus = { path = "../../dioxus/packages/dioxus", features = [
+    "desktop",
+    "router",
+    "launch",
+] }
+mozjpeg = { version = "0.10.6", features = ["parallel", "with_simd"] }
+rgb = { version = "0.8.37", features = ["as-bytes"] }
+tokio = { version = "1.35.1", features = ["full"] }
+zune-jpeg = "0.4.11"
