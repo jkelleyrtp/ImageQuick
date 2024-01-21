@@ -18,7 +18,7 @@ fn main() {
     LaunchBuilder::desktop()
         .with_cfg(
             dioxus::desktop::Config::default().with_window(
-                WindowBuilder::new().with_inner_size(LogicalSize::new(1600.0, 1000.0)),
+                WindowBuilder::new().with_inner_size(LogicalSize::new(1200.0, 1000.0)),
             ),
         )
         .launch(|| {
@@ -105,7 +105,7 @@ fn Home() -> Element {
 fn ImageList() -> Element {
     // React only to changes in the current directory
     let cur_dir = use_memo(move || FILES.read().current().to_string());
-    let files = use_hook(|| FILES.signal());
+    let mut files = use_hook(|| FILES.signal());
 
     // We want to generate and cache thumbnails for all images in the current directory
     use_asset_handler("thumbnails", move |req, res| {
@@ -145,9 +145,14 @@ fn ImageList() -> Element {
     });
 
     rsx! {
+        style { {include_str!("../src/image_list.css")} }
         div {
-            for image in files.read().path_names.iter() {
-                img { src: "/thumbnails{image}", class: "thumbnail" }
+            for (id, image) in files.read().path_names.iter().enumerate() {
+                img {
+                    src: "/thumbnails{image}",
+                    class: "thumbnail",
+                    onclick: move |_| files.write().enter_item(id),
+                }
             }
         }
     }
@@ -345,7 +350,7 @@ impl Files {
                 window().new_window(
                     viewer,
                     dioxus::desktop::Config::default().with_window(
-                        WindowBuilder::new().with_inner_size(LogicalSize::new(1600.0, 1000.0)),
+                        WindowBuilder::new().with_inner_size(LogicalSize::new(800.0, 800.0)),
                     ).with_custom_head(
                         r#"<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />"#.to_string()
                     ),
@@ -367,5 +372,15 @@ fn ImageViewer(path: PathBuf) -> Element {
     rsx! {
         style { {include_str!("./image_viewer.css")} }
         img { src: path.to_str().unwrap(), class: "viewer-image" }
+        div {
+            button {
+                onclick: move |_| window().close(),
+                "Import"
+            }
+            button {
+                onclick: move |_| window().close(),
+                "Discard"
+            }
+        }
     }
 }
